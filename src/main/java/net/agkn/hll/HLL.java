@@ -16,6 +16,7 @@ package net.agkn.hll;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import com.carrotsearch.hppc.IntByteHashMap;
@@ -37,12 +38,12 @@ import net.agkn.hll.util.NumberUtil;
 
 /**
  * A probabilistic set of hashed <code>long</code> elements. Useful for computing
- * the approximate cardinality of a stream of data in very small storage.<p/>
+ * the approximate cardinality of a stream of data in very small storage.
  *
  * A modified version of the <a href="http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf">
  * 'HyperLogLog' data structure and algorithm</a> is used, which combines both
  * probabilistic and non-probabilistic techniques to improve the accuracy and
- * storage requirements of the original algorithm.<p/>
+ * storage requirements of the original algorithm.
  *
  * More specifically, initializing and storing a new {@link HLL} will
  * allocate a sentinel value symbolizing the empty set ({@link HLLType#EMPTY}).
@@ -51,7 +52,7 @@ import net.agkn.hll.util.NumberUtil;
  * be sacrificed for memory footprint: the values in the sorted list are
  * "promoted" to a "{@link HLLType#SPARSE}" map-based HyperLogLog structure.
  * Finally, when enough registers are set, the map-based HLL will be converted
- * to a bit-packed "{@link HLLType#FULL}" HyperLogLog structure.<p/>
+ * to a bit-packed "{@link HLLType#FULL}" HyperLogLog structure.
  *
  * This data structure is interoperable with the implementations found at:
  * <ul>
@@ -62,7 +63,7 @@ import net.agkn.hll.util.NumberUtil;
  *
  * @author timon
  */
-public class HLL implements Cloneable {
+public class HLL implements Cloneable, Serializable {
     // minimum and maximum values for the log-base-2 of the number of registers
     // in the HLL
     public static final int MINIMUM_LOG2M_PARAM = 4;
@@ -159,7 +160,7 @@ public class HLL implements Cloneable {
      * @param expthresh tunes when the {@link HLLType#EXPLICIT} to
      *        {@link HLLType#SPARSE} promotion occurs,
      *        based on the set's cardinality. Must be at least -1 and at most 18.
-     *        <table>
+     *        <table summary="">
      *        <thead><tr><th><code>expthresh</code> value</th><th>Meaning</th></tr></thead>
      *        <tbody>
      *        <tr>
@@ -241,7 +242,7 @@ public class HLL implements Cloneable {
     }
 
     /**
-     *  Construct an empty HLL with the given {@code log2m} and {@code regwidth}.<p/>
+     *  Construct an empty HLL with the given {@code log2m} and {@code regwidth}.
      *
      *  This is equivalent to calling <code>HLL(log2m, regwidth, -1, true, HLLType.EMPTY)</code>.
      *
@@ -600,7 +601,7 @@ public class HLL implements Cloneable {
     // Clear
     /**
      * Clears the HLL. The HLL will have cardinality zero and will act as if no
-     * elements have been added.<p/>
+     * elements have been added.
      *
      * NOTE: Unlike {@link #addRaw(long)}, <code>clear</code> does NOT handle
      * transitions between {@link HLLType}s - a probabilistic type will remain
@@ -948,7 +949,7 @@ public class HLL implements Cloneable {
 
     /**
      * Deserializes the HLL (in {@link #toBytes(ISchemaVersion)} format) serialized
-     * into <code>bytes</code>.<p/>
+     * into <code>bytes</code>.
      *
      * @param  bytes the serialized bytes of new HLL
      * @return the deserialized HLL. This will never be <code>null</code>.
